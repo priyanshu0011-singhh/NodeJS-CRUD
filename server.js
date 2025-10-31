@@ -14,19 +14,15 @@ app.use(bodyParser.json())
 var dbConfig = require('./config/database.config.js');
 var mongoose = require('mongoose');
 
-mongoose.Promise = global.Promise;
-
-mongoose.connect(dbConfig.url, {
-	useMongoClient: true
-});
-
-mongoose.connection.on('error', function() {
-    console.log('Could not connect to the database. Exiting now...');
-    process.exit();
-});
-mongoose.connection.once('open', function() {
+// Connect to the database
+mongoose.connect(dbConfig.url)
+.then(() => {
     console.log("Successfully connected to the database");
 })
+.catch(err => {
+    console.log('Could not connect to the database. Exiting now...', err);
+    process.exit(1);
+});
 
 // define a simple route
 app.get('/', function(req, res){
